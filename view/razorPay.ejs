@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1>The Plants Store</h1>
+    <form>
+        <input type="checkbox" id="Money" name="Money Plant" value=50><label for = "name"> Money Plant - Rs = 50</label>
+        <input type="checkbox" id="Snake" name="Snake Plant" value="200"'><label for = "name"> Snake Plant - Rs = 200 </label>
+        <input type="checkbox" id="Jade" name="Jade Plant" value="350"><labe for = "name"> Jade Plant - Rs = 350</labe>
+        <input type ="checkbox" id="ZZ" name="ZZ Plant" value="250"><label for = "name"> ZZ Plant - Rs = 250</label>
+        <input type="checkbox" id="Temple" name="Temple Tree" value="1500"> <label for = "name"> Temple Tree - Rs = 1500 </label>
+        <button id="rzp-button1">Pay</button>
+    </form>
+</body>
+<script>
+    let Money = document.getElementById('Money').value
+    let Snake = document.getElementById('Snake').value
+    let Jade = document.getElementById('Jade').value
+    let ZZ = document.getElementById('ZZ').value
+    let Temple = document.getElementById('Temple').value
+    fetch({
+        method:"POST",
+        url : "/order"
+    }).then(order =>{
+    let  options = {
+        "key": "rzp_test_tCALVylF8FuC1B", 
+        "amount": "50000", 
+        "description": "Test Transaction",
+        "order_id": order.id, 
+        "callback_url": "/order_completed",
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        console.log(e.path[1])
+        rzp1.open();
+        e.preventDefault();
+    }
+})
+</script>
+</html>
+
+<!-- 1. Money Plant - Rs. 50
+2. Snake Plant - Rs. 200
+3. Jade Plant - Rs. 350
+4. ZZ Plant - Rs. 250
+5. Temple Tree - Rs. 1,500 -->
