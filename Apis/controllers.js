@@ -10,13 +10,15 @@ const razorPay = new Razorpay({
 
 export default class Payment {
     static welcomepage(req, res) { res.render('razorPay') }
-    static async createOrder(req, res) {
+    static createOrder(req, res) {
         var options = {
             amount: 5000,
             currency: "INR"
         };
-        await razorPay.orders.create(options, function (err, order) {
-            res.json(order);
+        razorPay.orders.create(options, function (err, order) {
+            if (!err) {
+                res.json(order);
+            }
         });
     }
     static async fetchOrder(req, res) {
