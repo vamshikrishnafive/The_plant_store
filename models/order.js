@@ -1,4 +1,4 @@
-const Mongoose = require("mongoose");
+import Mongoose from "mongoose"
 
 const orderSchema = Mongoose.Schema({
     id: String,
@@ -15,4 +15,6 @@ const orderSchema = Mongoose.Schema({
     created_at: Number,
 });
 
-module.exports = Mongoose.model("orders", orderSchema);
+export default Mongoose.model("orders", orderSchema);
+
+

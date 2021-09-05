@@ -26,18 +26,17 @@
     let Temple = document.getElementById('Temple').value
     fetch({
         method:"POST",
-        url : "/order"
+        url : "/api/v1/plant_store/order"
     }).then(order =>{
     let  options = {
         "key": "rzp_test_tCALVylF8FuC1B", 
         "amount": "50000", 
         "description": "Test Transaction",
         "order_id": order.id, 
-        "callback_url": "/order_completed",
+        "callback_url": "/api/v1/plant_store/order_completed"
     };
     var rzp1 = new Razorpay(options);
     document.getElementById('rzp-button1').onclick = function(e){
-        console.log(e.path[1])
         rzp1.open();
         e.preventDefault();
     }
