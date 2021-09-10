@@ -420,3 +420,4 @@ node_modules/update-notifier/node_modules/supports-color/index.js
 node_modules/update-notifier/node_modules/supports-color/license
 node_modules/update-notifier/node_modules/supports-color/package.json
 node_modules/update-notifier/node_modules/supports-color/readme.md
+.env
