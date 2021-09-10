@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,45 +8,75 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <title>Document</title>
 </head>
+
 <body>
     <h1>The Plants Store</h1>
     <form>
-        <input type="checkbox" id="Money" name="Money Plant" value=50><label for = "name"> Money Plant - Rs = 50</label>
-        <input type="checkbox" id="Snake" name="Snake Plant" value="200"'><label for = "name"> Snake Plant - Rs = 200 </label>
-        <input type="checkbox" id="Jade" name="Jade Plant" value="350"><labe for = "name"> Jade Plant - Rs = 350</labe>
-        <input type ="checkbox" id="ZZ" name="ZZ Plant" value="250"><label for = "name"> ZZ Plant - Rs = 250</label>
-        <input type="checkbox" id="Temple" name="Temple Tree" value="1500"> <label for = "name"> Temple Tree - Rs = 1500 </label>
+        <img src="https://images.unsplash.com/photo-1579621970343-21c491b3f363?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"
+            height="200" alt="MoneyPlant" /><input type="checkbox" id="Money" name="Plant" value=50><label for="name">
+            Money Plant - Rs = 50</label>
+        <img src="https://images.unsplash.com/photo-1593482892540-73c9199d8949?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"
+            height="200" alt="SnakePlant" /><input type="checkbox" id="Snake" name="Plant" value=200'><label for="name">
+            Snake Plant - Rs = 200 </label>
+        <img src="https://images.unsplash.com/photo-1600680063181-b24b5298fd06?ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8amFkZSUyMHBsYW50fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
+            height="200" alt="JadePlant" /><input type="checkbox" id="Jade" name="Plant" value=350>
+        <labe for="name"> Jade Plant - Rs = 350</labe>
+        <img src="https://images.unsplash.com/photo-1622673037877-18ee56d1f990?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"
+            height="200" alt="ZZPlant" /><input type="checkbox" id="ZZ" name="Plant" value=250><label for="name"> ZZ
+            Plant - Rs = 250</label>
+        <img src="https://images.unsplash.com/photo-1505079403222-b5bbf1484f19?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"
+            height="200" alt="TempleTree" /><input type="checkbox" id="Temple" name="Plant" value=1500> <label
+            for="name"> Temple Tree - Rs = 1500 </label>
+        <button id="button">add</button>
         <button id="rzp-button1">Pay</button>
     </form>
 </body>
 <script>
-    let Money = document.getElementById('Money').value
-    let Snake = document.getElementById('Snake').value
-    let Jade = document.getElementById('Jade').value
-    let ZZ = document.getElementById('ZZ').value
-    let Temple = document.getElementById('Temple').value
-    fetch({
-        method:"POST",
-        url : "/api/v1/plant_store/order"
-    }).then(order =>{
-    let  options = {
-        "key": "rzp_test_OcHUrLd0jZPNbp", 
-        "amount": "50000", 
-        "description": "Test Transaction",
-        "order_id": order.id, 
-        "callback_url": "/api/v1/plant_store/order_completed"
-    };
-    var rzp1 = new Razorpay(options);
-    document.getElementById('rzp-button1').onclick = function(e){
-        rzp1.open();
-        e.preventDefault();
-    }
-})
+const Money = document.getElementById('Money')
+const Snake = document.getElementById('Snake');
+const Jade = document.getElementById('Jade');
+const ZZ = document.getElementById('ZZ');
+const Temple = document.getElementById('Temple');
+let userAmount = [];
+let rzp1;
+let rupees = 0;
+let raw;
+let requestOptions;
+document.getElementById("button").onclick = function (e) {
+    if (Money.checked) { userAmount.push(parseInt(Money.value)) }
+    if (Snake.checked) { userAmount.push(parseInt(Snake.value)) }
+    if (Jade.checked) { userAmount.push(parseInt(Jade.value)) }
+    if (ZZ.checked) { userAmount.push(parseInt(ZZ.value)) }
+    if (Temple.checked) { userAmount.push(parseInt(Temple.value)) }
+    userAmount.reduce((a, b) => a + b)
+    console.log(userAmount)
+}
+fetch("/api/v1/plant_store/order", { method: 'POST' })
+    .catch(error => console.log('error', error))
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById("rzp-button1").onclick = function (e) {
+            options = {
+                "key": "rzp_test_D4p8fB9jd0NCbD",
+                "amount": 10000,
+                "description": "Transaction",
+                "order_id": result.id,
+                "callback_url": "/api/v1/plant_store/order_completed",
+            },
+            rzp1 = new Razorpay(options);
+            e.preventDefault();
+            rzp1.open()
+            rzp1.on('payment.failed', function (response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            })
+        }
+    })
 </script>
-</html>
 
-<!-- 1. Money Plant - Rs. 50
-2. Snake Plant - Rs. 200
-3. Jade Plant - Rs. 350
-4. ZZ Plant - Rs. 250
-5. Temple Tree - Rs. 1,500 -->
+</html>
