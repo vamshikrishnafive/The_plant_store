@@ -15,7 +15,7 @@ export default class Payment {
         var options = {
             amount: 10000,
             currency: "INR",
-            receipt: uuidv4(),
+            receipt: `VA-${uuidv4()}`,
         };
         razorPay.orders.create(options, function (err, order) {
             if (!err) {
