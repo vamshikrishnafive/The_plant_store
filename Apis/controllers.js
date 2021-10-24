@@ -1,6 +1,6 @@
 import Razorpay from 'razorPay';
 import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';    
+import { v4 as uuidv4 } from 'uuid';
 import storeOrder from '../Models/order.js';
 dotenv.config()
 
@@ -12,6 +12,7 @@ const razorPay = new Razorpay({
 export default class Payment {
     static welcomepage(req, res) { res.render('razorPay') }
     static createOrder(req, res) {
+        console.log(req.body)
         var options = {
             amount: 10000,
             currency: "INR",

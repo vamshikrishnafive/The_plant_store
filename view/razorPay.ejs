@@ -127,10 +127,8 @@
                     <input type="checkbox" id="Temple" name="Plant" value=1500>
                     <label for="name"> Temple Tree: 1500 Rs/- </label>
                 </div>
-                <div id="button-pair">
-                    <button id="add-button">Add to Cart</button>
-                    <button id="rzp-button1">Buy</button>
-                </div>
+                <button id="add-button">Add to Cart</button>
+                <button id="rzp-button1">Buy</button>
                 <p id="demo"></p>
             </form>
         </div>
@@ -161,35 +159,44 @@
     })
     add_button.addEventListener("click", function (e) {
         e.preventDefault();
+        if (cart.length === 0) {
+            demo.innerHTML = `Added 0 item please add items`
+        }
         total = cart.reduce((prev, curr) => prev + curr)
         demo.innerHTML = `Added ${cart.length} items in cart Total in rupees: ${total}/-`
     })
-    await fetch("/api/v1/plant_store/order", { method: 'POST' })
-        .then(response => response.json())
-        .then(result => {
-            document.getElementById("rzp-button1").onclick = function () {
-                console.log(total)
-                options = {
-                    "key": "rzp_test_D4p8fB9jd0NCbD",
-                    "amount": 100,
-                    "description": "Transaction",
-                    "order_id": result.id,
-                    "callback_url": "/api/v1/plant_store/order_completed",
-                },
-                rzp1 = new Razorpay(options);
-                e.preventDefault();
-                rzp1.open()
-                rzp1.on('payment.failed', function (response) {
-                    alert(response.error.code);
-                    alert(response.error.description);
-                    alert(response.error.source);
-                    alert(response.error.step);
-                    alert(response.error.reason);
-                    alert(response.error.metadata.order_id);
-                    alert(response.error.metadata.payment_id);
-                })
-            }
-        }).catch(error => console.error(error))
+    const PostPay = async (total) => {
+        await fetch("/api/v1/plant_store/order", {
+            method: 'POST',
+            body: JSON.stringify(total)
+        })
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                document.getElementById("rzp-button1").onclick = (e) => {
+                    options = {
+                        "key": "rzp_test_D4p8fB9jd0NCbD",
+                        "amount": total,
+                        "description": "Transaction",
+                        "order_id": result.id,
+                        "callback_url": "/api/v1/plant_store/order_completed",
+                    },
+                        rzp1 = new Razorpay(options);
+                        e.preventDefault();
+                    rzp1.open()
+                    rzp1.on('payment.failed', function (response) {
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        alert(response.error.metadata.order_id);
+                        alert(response.error.metadata.payment_id);
+                    })
+                }
+            }).catch(error => console.error(error))
+    }
+    PostPay(total);
 </script>
 
 </html>
